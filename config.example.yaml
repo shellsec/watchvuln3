@@ -1,0 +1,52 @@
+# WatchVuln 配置示例 — 复制为 config.yaml 后修改
+# 启动: watchvuln -c config.yaml
+# 仓库: https://github.com/shellsec/watchvuln3
+#
+# 等价的命令行示例（密钥请自行替换，勿提交到 Git）:
+#   .\watchvuln.exe --dt YOUR_DINGDING_ACCESS_TOKEN --ds "YOUR_DINGDING_SIGN_SECRET" --wk YOUR_WECHATWORK_KEY -nm --interval 30m --web-addr 0.0.0.0:8765
+#
+# 配置文件与 CLI 对应关系:
+#   --dt / --ds  -> pusher 中 type: dingding
+#   --wk         -> pusher 中 type: wechatwork
+#   -nm          -> no_start_message: true
+#   --interval   -> interval
+#   --web-addr   -> web_addr
+
+db_conn: sqlite3://vuln_v3.sqlite3
+sources: [ "avd", "chaitin", "nox", "oscs", "threatbook", "seebug", "struts2", "kev", "venustech" ]
+interval: 30m
+
+# 不推送启动时的「初始化完成」消息（等同 -nm / --no-start-message）
+no_start_message: true
+
+enable_cve_filter: true
+no_github_search: false
+diff_mode: false
+skip_tls_verify: false
+proxy: ""
+
+# 漏洞情报看板（无登录）；0.0.0.0 允许局域网访问，仅本机用 127.0.0.1:8765
+web_addr: "0.0.0.0:8765"
+
+white_keywords: [ ]
+black_keywords: [ ]
+
+pusher:
+  - type: dingding
+    access_token: "YOUR_DINGDING_ACCESS_TOKEN"
+    sign_secret: "YOUR_DINGDING_SIGN_SECRET"
+
+  - type: wechatwork
+    key: "YOUR_WECHATWORK_KEY"
+
+  # 多个钉钉：复制 dingding 块即可
+  # - type: dingding
+  #   access_token: "YOUR_DINGDING_ACCESS_TOKEN_2"
+  #   sign_secret: "YOUR_DINGDING_SIGN_SECRET_2"
+
+  # --- 以下为可选推送，不用可删 ---
+  # - type: lark
+  #   access_token: ""
+  #   sign_secret: ""
+  # - type: webhook
+  #   url: ""

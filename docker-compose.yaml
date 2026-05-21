@@ -1,0 +1,31 @@
+version: '3'
+services:
+  watchvuln:
+    restart: always
+    image: ghcr.io/shellsec/watchvuln3:latest
+    ports:
+      - "127.0.0.1:8765:8765"
+    environment:
+      # 使用配置文件（推荐：支持多钉钉/多看板）
+      # 挂载后: watchvuln -c /config/config.yaml
+      DINGDING_ACCESS_TOKEN: YOUR_TOKEN_HERE
+      DINGDING_SECRET: YOUR_SECRET_HERE
+      DB_CONN: sqlite3:///data/vuln_v3.sqlite3
+      INTERVAL: 30m
+      NO_START_MESSAGE: "true"
+      WEB_ADDR: "0.0.0.0:8765"
+    volumes:
+      - "./data:/data"
+      # - "./config.yaml:/config/config.yaml:ro"
+    # command: ["/app/main", "-c", "/config/config.yaml"]
+
+  # 可选 PostgreSQL（取消注释并修改 DB_CONN）
+  # postgres:
+  #   restart: always
+  #   image: postgres:14.4-alpine
+  #   environment:
+  #     POSTGRES_DB: watchvuln
+  #     POSTGRES_USER: watchvuln
+  #     POSTGRES_PASSWORD: change-me
+  #   volumes:
+  #     - "./data/postgresql:/var/lib/postgresql/data"

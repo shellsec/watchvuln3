@@ -1,0 +1,10 @@
+# 仅推送通道列表，配合 CLI: watchvuln --pusher-file pushers.yaml --dt ... 可省略 dt 若文件已含全部推送
+# 多个钉钉：重复 type: dingding 即可
+
+- type: dingding
+  access_token: "YOUR_TOKEN_1"
+  sign_secret: "YOUR_SECRET_1"
+
+- type: dingding
+  access_token: "YOUR_TOKEN_2"
+  sign_secret: "YOUR_SECRET_2"
