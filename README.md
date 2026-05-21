@@ -576,7 +576,3 @@ docker run -v $(pwd):/config \
 ## 其他
 
 为了减少内卷，该工具在 00:00 到 07:00 间会去 sleep 不会运行, 请确保你的服务器是正确的时间！
-
-扫码加我拉进讨论群，请备注申请理由为：问题反馈与讨论，否则不通过
-
-<img src="https://github.com/user-attachments/assets/362d2079-4cfa-4764-819f-a4aa70580c1d" width="300" />
