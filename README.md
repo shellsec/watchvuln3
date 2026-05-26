@@ -595,3 +595,9 @@ docker run -v $(pwd):/config \
 ## 其他
 
 为了减少内卷，该工具在 00:00 到 07:00 间会去 sleep 不会运行, 请确保你的服务器是正确的时间！
+
+## ☕ 请我喝可乐
+
+开源不易，欢迎赞助支持：
+
+👉 [爱发电](https://www.ifdian.net/a/shellsec)
