@@ -12,7 +12,10 @@ const dashboardHTML = `<!DOCTYPE html>
     * { box-sizing: border-box; }
     body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:var(--bg); color:var(--text); }
     header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; }
+    .brand { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
     h1 { margin:0; font-size:1.35rem; font-weight:600; }
+    .repo-link { color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; }
+    .repo-link:hover { color:var(--accent); border-color:var(--accent); }
     .stats { display:flex; gap:12px; flex-wrap:wrap; }
     .stat { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px 14px; min-width:88px; }
     .stat b { display:block; font-size:1.25rem; }
@@ -44,7 +47,10 @@ const dashboardHTML = `<!DOCTYPE html>
 </head>
 <body>
   <header>
-    <h1>漏洞情报看板</h1>
+    <div class="brand">
+      <h1>漏洞情报看板</h1>
+      <a class="repo-link" href="https://github.com/shellsec/watchvuln3" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
     <div class="stats" id="stats"></div>
   </header>
   <main>
