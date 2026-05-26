@@ -129,6 +129,10 @@ func (s *Server) handleAPIVulns(w http.ResponseWriter, r *http.Request) {
 	q := strings.TrimSpace(r.URL.Query().Get("q"))
 	severity := strings.TrimSpace(r.URL.Query().Get("severity"))
 	source := strings.TrimSpace(r.URL.Query().Get("source"))
+	sortBy := strings.TrimSpace(r.URL.Query().Get("sort"))
+	if sortBy != "update" {
+		sortBy = "disclosure"
+	}
 
 	query := s.db.VulnInformation.Query()
 	if severity != "" {
@@ -164,8 +168,16 @@ func (s *Server) handleAPIVulns(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, err)
 		return
 	}
+	switch sortBy {
+	case "update":
+		query = query.Order(ent.Desc(vulninformation.FieldUpdateTime))
+	default:
+		query = query.Order(
+			ent.Desc(vulninformation.FieldDisclosure),
+			ent.Desc(vulninformation.FieldUpdateTime),
+		)
+	}
 	rows, err := query.
-		Order(ent.Desc(vulninformation.FieldUpdateTime)).
 		Offset((page - 1) * limit).
 		Limit(limit).
 		All(ctx)
@@ -197,6 +209,7 @@ func (s *Server) handleAPIVulns(w http.ResponseWriter, r *http.Request) {
 		"total": total,
 		"page":  page,
 		"limit": limit,
+		"sort":  sortBy,
 		"items": items,
 	})
 }

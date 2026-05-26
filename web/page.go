@@ -39,6 +39,7 @@ const dashboardHTML = `<!DOCTYPE html>
     .modal-box pre { white-space:pre-wrap; word-break:break-word; color:var(--muted); font-size:.85rem; }
     .links a { color:var(--accent); margin-right:10px; font-size:.85rem; }
     .empty { text-align:center; padding:40px; color:var(--muted); }
+    .hint { margin:-8px 0 14px; color:var(--muted); font-size:.82rem; }
   </style>
 </head>
 <body>
@@ -51,10 +52,15 @@ const dashboardHTML = `<!DOCTYPE html>
       <input type="search" id="q" placeholder="搜索标题 / CVE / 描述…" style="min-width:220px" />
       <select id="severity"><option value="">全部等级</option><option>严重</option><option>高危</option><option>中危</option><option>低危</option></select>
       <select id="source"><option value="">全部来源</option></select>
+      <select id="sort">
+        <option value="disclosure">按披露日期</option>
+        <option value="update">按入库更新</option>
+      </select>
       <button type="button" id="searchBtn">查询</button>
     </div>
+    <p class="hint" id="sortHint">按披露日期排序，最近公开的 CVE 排在前面。</p>
     <table>
-      <thead><tr><th>等级</th><th>标题</th><th>CVE</th><th>披露</th><th>更新</th></tr></thead>
+      <thead><tr><th>等级</th><th>标题</th><th>CVE</th><th>披露日期</th><th>入库更新</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
     <div class="pager">
@@ -66,7 +72,15 @@ const dashboardHTML = `<!DOCTYPE html>
   <div class="modal" id="modal"><div class="modal-box" id="modalBody"></div></div>
   <script>
     let page = 1, total = 0, limit = 30, items = [];
+    const sortHints = {
+      disclosure: '按披露日期排序，最近公开的 CVE 排在前面。',
+      update: '按入库更新时间排序，最近被程序同步或变更的记录排在前面。'
+    };
     const sevClass = s => 'sev sev-' + (s || '');
+    function updateSortHint() {
+      const sort = document.getElementById('sort').value;
+      document.getElementById('sortHint').textContent = sortHints[sort] || sortHints.disclosure;
+    }
     async function loadStats() {
       const r = await fetch('/api/stats'); const d = await r.json();
       const el = document.getElementById('stats');
@@ -86,7 +100,8 @@ const dashboardHTML = `<!DOCTYPE html>
     }
     async function loadVulns() {
       const params = new URLSearchParams({ page, limit, q: document.getElementById('q').value,
-        severity: document.getElementById('severity').value, source: document.getElementById('source').value });
+        severity: document.getElementById('severity').value, source: document.getElementById('source').value,
+        sort: document.getElementById('sort').value });
       const r = await fetch('/api/vulns?' + params); const d = await r.json();
       total = d.total; items = d.items || []; page = d.page;
       const tb = document.getElementById('tbody');
@@ -108,10 +123,11 @@ const dashboardHTML = `<!DOCTYPE html>
     }
     document.getElementById('modal').onclick = e => { if (e.target.id==='modal') e.target.classList.remove('open'); };
     document.getElementById('searchBtn').onclick = () => { page=1; loadVulns(); };
+    document.getElementById('sort').onchange = () => { updateSortHint(); page=1; loadVulns(); };
     document.getElementById('q').onkeydown = e => { if (e.key==='Enter') { page=1; loadVulns(); }};
     document.getElementById('prevBtn').onclick = () => { if (page>1) { page--; loadVulns(); }};
     document.getElementById('nextBtn').onclick = () => { if (page*limit<total) { page++; loadVulns(); }};
-    loadStats(); loadSources(); loadVulns();
+    updateSortHint(); loadStats(); loadSources(); loadVulns();
   </script>
 </body>
 </html>`
