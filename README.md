@@ -5,6 +5,12 @@
 
 **仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.0.0
 
+## ☕ 请我喝可乐
+
+开源不易，欢迎赞助支持：
+
+👉 [爱发电](https://www.ifdian.net/a/shellsec)
+
 ## 关于本仓库
 
 本项目基于原作者 **[zema1/watchvuln](https://github.com/zema1/watchvuln)** 维护与扩展，核心思路（多源高价值漏洞采集、过滤、多渠道推送）均来自上游，在此向原作者 **zema1** 表示感谢。
@@ -595,9 +601,3 @@ docker run -v $(pwd):/config \
 ## 其他
 
 为了减少内卷，该工具在 00:00 到 07:00 间会去 sleep 不会运行, 请确保你的服务器是正确的时间！
-
-## ☕ 请我喝可乐
-
-开源不易，欢迎赞助支持：
-
-👉 [爱发电](https://www.ifdian.net/a/shellsec)
