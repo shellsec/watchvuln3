@@ -5,6 +5,18 @@
 
 **仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.0.0
 
+## 漏洞情报看板
+
+本地浏览库内情报，支持搜索、筛选、排序；标题旁一键复制分析提示词并跳转 **ChatGPT / Gemini / DeepSeek**。启动方式：`--web-addr 127.0.0.1:8765` 或 `watchvuln board`，更多说明见下文 **漏洞情报看板（Web，无登录）** 折叠段。
+
+![漏洞情报看板：列表、筛选排序与 AI 分析按钮](https://github.com/user-attachments/assets/6c10562e-4238-42cc-befd-052a72b0f7f7)
+
+*看板列表页：按披露日期排序，标题旁 ChatGPT / Gemini / DS 一键复制并跳转 AI 分析*
+
+![漏洞情报看板：漏洞详情弹窗](https://github.com/user-attachments/assets/f52964bd-b69d-4925-91f2-a8a2947b0e9c)
+
+*点击表格行查看描述、标签、修复建议与参考链接*
+
 ## ☕ 请我喝可乐
 
 开源不易，欢迎赞助支持：
@@ -172,7 +184,7 @@ watchvuln --pusher-file pushers.example.yaml -c config.yaml
 
 <details><summary>漏洞情报看板（Web，无登录）</summary>
 
-从本地数据库浏览已采集漏洞，不依赖「最近推送」列表。
+从本地数据库浏览已采集漏洞，不依赖「最近推送」列表。支持搜索、筛选、排序，标题旁一键复制分析提示词并跳转 **ChatGPT / Gemini / DeepSeek**，无登录。
 
 与监测一起启动时加上 `--web-addr` 即可，完整示例见上文「推荐启动示例」。
 
@@ -184,7 +196,7 @@ watchvuln board --web-addr 127.0.0.1:8765
 -e WEB_ADDR=0.0.0.0:8765
 ```
 
-本机访问 `http://127.0.0.1:8765/`；监听 `0.0.0.0` 时可用局域网 IP 访问。配置文件中对应项为 `web_addr`。
+本机访问 `http://127.0.0.1:8765/`；监听 `0.0.0.0` 时可用局域网 IP 访问。配置文件中对应项为 `web_addr`。界面预览见 [文首](#漏洞情报看板)。
 
 **看板功能**
 
