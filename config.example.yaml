@@ -27,6 +27,10 @@ proxy: ""
 
 # 漏洞情报看板（无登录）；0.0.0.0 允许局域网访问，仅本机用 127.0.0.1:8765
 web_addr: "0.0.0.0:8765"
+# 推送消息末尾附加看板链接（端口自动跟随 web_addr，改端口只需改 web_addr）
+# 监听 0.0.0.0 时填局域网 IP 或域名；也可直接写完整 URL 覆盖：
+# web_public_url: "http://192.168.1.100:8765"
+web_public_host: "192.168.1.100"
 
 white_keywords: [ ]
 black_keywords: [ ]

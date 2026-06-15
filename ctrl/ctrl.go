@@ -328,7 +328,7 @@ func (w *WatchVulnApp) collectAndPush(ctx context.Context) {
 func (w *WatchVulnApp) pushVuln(vul *grab.VulnInfo) error {
 	var pushErr *multierror.Error
 
-	if err := w.textPusher.PushMarkdown(vul.Title, push.RenderVulnInfo(vul)); err != nil {
+	if err := w.textPusher.PushMarkdown(vul.Title, push.RenderVulnInfo(vul, w.config.BoardPublicURL())); err != nil {
 		pushErr = multierror.Append(pushErr, err)
 	}
 

@@ -23,25 +23,43 @@ func TestRenderVulnInfo(t *testing.T) {
 		References:   []string{"https://ti.qianxin.com/blog/articles/pipreqs-code-execution-vulnerability/"},
 		Solutions:    "1. 升级到最新版本\n2. 更新",
 	}
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, ""))
 	fmt.Println("============================")
 	v.GithubSearch = nil
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, ""))
 	fmt.Println("============================")
 	v.CVE = ""
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, ""))
 
 	fmt.Println("============================")
 	v.References = nil
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, ""))
 
 	fmt.Println("============================")
 	v.CVE = "CVE-2023-31543"
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, ""))
 
 	fmt.Println("============================")
 	v.Solutions = ""
-	fmt.Println(RenderVulnInfo(v))
+	fmt.Println(RenderVulnInfo(v, "http://192.168.1.100:8765/"))
+}
+
+func TestRenderVulnInfoBoardURL(t *testing.T) {
+	v := &grab.VulnInfo{
+		Title:       "Test Vuln",
+		CVE:         "CVE-2024-0001",
+		Severity:    "高危",
+		Disclosure:  "2024-01-01",
+		From:        "https://example.com",
+		Reason:      []string{"created"},
+		Description: "test",
+	}
+	out := RenderVulnInfo(v, "http://192.168.1.100:9000/")
+	assert.Contains(t, out, "### **本地情报看板**")
+	assert.Contains(t, out, "[点击查看漏洞情报看板](http://192.168.1.100:9000/)")
+
+	outEmpty := RenderVulnInfo(v, "")
+	assert.NotContains(t, outEmpty, "本地情报看板")
 }
 
 func TestEscapeMarkdown(t *testing.T) {

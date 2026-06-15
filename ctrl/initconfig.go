@@ -18,6 +18,8 @@ diff_mode: false
 skip_tls_verify: false
 proxy: ""
 web_addr: "0.0.0.0:8765"
+# 推送末尾看板链接：端口自动跟随 web_addr
+web_public_host: "192.168.1.100"
 white_keywords: [ ]
 black_keywords: [ ]
 

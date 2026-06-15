@@ -28,6 +28,8 @@ type WatchVulnAppConfig struct {
 	Proxy           string              `yaml:"proxy" json:"proxy"`
 	SkipTLSVerify   bool                `yaml:"skip_tls_verify" json:"skip_tls_verify"`
 	WebAddr         string              `yaml:"web_addr" json:"web_addr"`
+	WebPublicURL    string              `yaml:"web_public_url" json:"web_public_url"`
+	WebPublicHost   string              `yaml:"web_public_host" json:"web_public_host"`
 	Test            bool                `yaml:"test" json:"test"`
 
 	NoFilter       bool          `yaml:"-" json:"-"`

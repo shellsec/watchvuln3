@@ -35,6 +35,12 @@ const vulnInfoMsg = `
 {{ end }}
 {{ else }}暂未找到
 {{ end -}}{{ end -}}
+
+{{ if .BoardURL }}
+---
+### **本地情报看板**
+[点击查看漏洞情报看板]({{ .BoardURL }})
+{{ end -}}
 `
 
 const initialMsg = `
@@ -66,7 +72,12 @@ const (
 	maxReferenceIndexLength = 8
 )
 
-func RenderVulnInfo(v *grab.VulnInfo) string {
+type vulnInfoRenderCtx struct {
+	*grab.VulnInfo
+	BoardURL string
+}
+
+func RenderVulnInfo(v *grab.VulnInfo, boardURL string) string {
 	var builder strings.Builder
 	runeDescription := []rune(v.Description)
 	if len(runeDescription) > maxDescriptionLength {
@@ -76,7 +87,8 @@ func RenderVulnInfo(v *grab.VulnInfo) string {
 		v.References = v.References[:maxReferenceIndexLength]
 	}
 	v.Description = escapeMarkdown(v.Description)
-	if err := vulnInfoMsgTpl.Execute(&builder, v); err != nil {
+	ctx := &vulnInfoRenderCtx{VulnInfo: v, BoardURL: strings.TrimSpace(boardURL)}
+	if err := vulnInfoMsgTpl.Execute(&builder, ctx); err != nil {
 		return err.Error()
 	}
 	return builder.String()

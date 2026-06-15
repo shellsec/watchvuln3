@@ -5,6 +5,10 @@
 
 **仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.0.0
 
+> **EN** — WatchVuln collects high-severity vulnerabilities from AVD, Chaitin, Qianxin TI, OSCS, ThreatBook, Seebug, KEV, and other sources, filters them by policy, and pushes alerts to DingTalk, WeCom, and more. Supports multiple channels of the same pusher type, optional startup notifications, and a local web board to browse your intel database—with one-click copy of analysis prompts and jump to ChatGPT, Gemini, or DeepSeek.
+
+> **ZH** — WatchVuln 从 AVD、长亭、奇安信、OSCS、微步、Seebug、KEV 等源采集高危漏洞，按策略过滤后推送到钉钉、企业微信等；支持多群同类型推送、关闭启动通知、本地 Web 看板浏览情报库，一键复制分析提示词并跳转 ChatGPT / Gemini / DeepSeek。
+
 ## 漏洞情报看板
 
 本地浏览库内情报，支持搜索、筛选、排序；标题旁一键复制分析提示词并跳转 **ChatGPT / Gemini / DeepSeek**。启动方式：`--web-addr 127.0.0.1:8765` 或 `watchvuln board`，更多说明见下文 **漏洞情报看板（Web，无登录）** 折叠段。

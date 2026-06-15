@@ -24,6 +24,9 @@ func LogStartupSummary(config *WatchVulnAppConfig) {
 	}
 	if config.WebAddr != "" {
 		log.Infof("vuln board: http://%s/", config.WebAddr)
+		if hint := config.BoardPublicURLHint(); hint != "" {
+			log.Infof("vuln board %s", hint)
+		}
 	} else {
 		log.Infof("vuln board: disabled (use --web-addr 127.0.0.1:8765 or `watchvuln board`)")
 	}

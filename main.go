@@ -226,6 +226,16 @@ func main() {
 			Category: "[Launch Options]",
 		},
 		&cli.StringFlag{
+			Name:     "web-public-url",
+			Usage:    "full public URL for board link in push messages (overrides web-public-host)",
+			Category: "[Launch Options]",
+		},
+		&cli.StringFlag{
+			Name:     "web-public-host",
+			Usage:    "public host/IP for board link in push; port is taken from web-addr automatically",
+			Category: "[Launch Options]",
+		},
+		&cli.StringFlag{
 			Name:     "pusher-file",
 			Usage:    "yaml/json file with pusher list (supports multiple same-type channels)",
 			Category: "[\x00Push Options]",
@@ -378,6 +388,8 @@ func initConfigFromCli(c *cli.Context) (*ctrl.WatchVulnAppConfig, error) {
 	blacklistFile := c.String("blacklist-file")
 	proxy := c.String("proxy")
 	webAddr := c.String("web-addr")
+	webPublicURL := c.String("web-public-url")
+	webPublicHost := c.String("web-public-host")
 	insecure := c.Bool("insecure")
 	test := c.Bool("test")
 
@@ -413,6 +425,12 @@ func initConfigFromCli(c *cli.Context) (*ctrl.WatchVulnAppConfig, error) {
 	}
 	if os.Getenv("WEB_ADDR") != "" {
 		webAddr = os.Getenv("WEB_ADDR")
+	}
+	if os.Getenv("WEB_PUBLIC_URL") != "" {
+		webPublicURL = os.Getenv("WEB_PUBLIC_URL")
+	}
+	if os.Getenv("WEB_PUBLIC_HOST") != "" {
+		webPublicHost = os.Getenv("WEB_PUBLIC_HOST")
 	}
 
 	log.Infof("config: INTERVAL=%s, NO_FILTER=%v, NO_START_MESSAGE=%v, NO_GITHUB_SEARCH=%v, ENABLE_CVE_FILTER=%v",
@@ -467,6 +485,8 @@ func initConfigFromCli(c *cli.Context) (*ctrl.WatchVulnAppConfig, error) {
 		Pusher:          pusher,
 		Proxy:           proxy,
 		WebAddr:         webAddr,
+		WebPublicURL:    webPublicURL,
+		WebPublicHost:   webPublicHost,
 		SkipTLSVerify:   insecure,
 		Test:            test,
 	}
