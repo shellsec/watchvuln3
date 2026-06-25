@@ -1,3 +1,21 @@
+## v3.1.0 (2026-06-25)
+
+### 新增
+
+- **看板 RSS 订阅**：`GET /feed.xml`，默认最近 50 条**已推送**漏洞；看板标题旁增加 RSS 入口，页面 head 内 `rel="alternate"` 便于阅读器发现
+- **看板/RSS/推送对外地址**：配置项 `web_public_host`、`web_public_url`；CLI `--web-public-host`、`--web-public-url`；环境变量 `WEB_PUBLIC_HOST`、`WEB_PUBLIC_URL`；**端口自动跟随** `web_addr`
+- 钉钉等 Markdown 推送消息末尾附加**本地情报看板**链接（需配置对外地址；监听 `0.0.0.0` 时必须配置 `web_public_host`）
+- **多平台交叉编译**：`scripts/build-release.ps1`（Windows）、`scripts/build-release.sh`（Linux/macOS），一次产出 Windows / Linux / macOS 二进制至 `dist/`
+
+### 改进
+
+- 启动配置自检增加 RSS Feed 可访问地址（如 `http://192.168.x.x:8766/feed.xml`）
+- 完善 `README.md`、`CONFIG.md`、`config.example.yaml` 文档
+
+### 其他
+
+- `dist/` 加入 `.gitignore`，本地编译产物不同步 Git
+
 ## v3.0.0 (2026-05-21)
 
 ### 重大版本

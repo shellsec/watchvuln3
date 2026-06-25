@@ -60,6 +60,7 @@ func boardAction(c *cli.Context) error {
 	ctx, cancel := signalCtx()
 	defer cancel()
 	fmt.Printf("漏洞情报看板: http://%s/ (Ctrl+C 退出)\n", addr)
+	fmt.Printf("RSS 订阅: http://%s/feed.xml\n", addr)
 	return web.NewServer(client, addr).Start(ctx)
 }
 

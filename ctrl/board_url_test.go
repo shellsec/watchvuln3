@@ -65,3 +65,43 @@ func TestBoardPublicURL(t *testing.T) {
 		})
 	}
 }
+
+func TestBoardFeedPublicURL(t *testing.T) {
+	assert := require.New(t)
+
+	cases := []struct {
+		name   string
+		config WatchVulnAppConfig
+		want   string
+	}{
+		{
+			name: "from public host and web_addr port",
+			config: WatchVulnAppConfig{
+				WebAddr:       "0.0.0.0:8766",
+				WebPublicHost: "192.168.1.100",
+			},
+			want: "http://192.168.1.100:8766/feed.xml",
+		},
+		{
+			name: "from full public url",
+			config: WatchVulnAppConfig{
+				WebAddr:      "0.0.0.0:8765",
+				WebPublicURL: "http://vuln.example.com:9000/",
+			},
+			want: "http://vuln.example.com:9000/feed.xml",
+		},
+		{
+			name: "loopback",
+			config: WatchVulnAppConfig{
+				WebAddr: "127.0.0.1:8765",
+			},
+			want: "http://127.0.0.1:8765/feed.xml",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(tc.want, tc.config.BoardFeedPublicURL())
+		})
+	}
+}

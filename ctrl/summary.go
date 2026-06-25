@@ -27,6 +27,11 @@ func LogStartupSummary(config *WatchVulnAppConfig) {
 		if hint := config.BoardPublicURLHint(); hint != "" {
 			log.Infof("vuln board %s", hint)
 		}
+		if feed := config.BoardFeedPublicURL(); feed != "" {
+			log.Infof("vuln board rss feed: %s", feed)
+		} else {
+			log.Infof("vuln board rss feed: http://%s/feed.xml", config.WebAddr)
+		}
 	} else {
 		log.Infof("vuln board: disabled (use --web-addr 127.0.0.1:8765 or `watchvuln board`)")
 	}

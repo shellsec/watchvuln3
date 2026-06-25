@@ -3,11 +3,11 @@
 [![GitHub Release](https://img.shields.io/github/v/release/shellsec/watchvuln3?label=release)](https://github.com/shellsec/watchvuln3/releases)
 [![License](https://img.shields.io/github/license/shellsec/watchvuln3)](https://github.com/shellsec/watchvuln3)
 
-**仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.0.0
+**仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.1.0
 
 > **EN** — WatchVuln collects high-severity vulnerabilities from AVD, Chaitin, Qianxin TI, OSCS, ThreatBook, Seebug, KEV, and other sources, filters them by policy, and pushes alerts to DingTalk, WeCom, and more. Supports multiple channels of the same pusher type, optional startup notifications, and a local web board to browse your intel database—with one-click copy of analysis prompts and jump to ChatGPT, Gemini, or DeepSeek.
 
-> **ZH** — WatchVuln 从 AVD、长亭、奇安信、OSCS、微步、Seebug、KEV 等源采集高危漏洞，按策略过滤后推送到钉钉、企业微信等；支持多群同类型推送、关闭启动通知、本地 Web 看板浏览情报库，一键复制分析提示词并跳转 ChatGPT / Gemini / DeepSeek。
+> **ZH** — WatchVuln 从 AVD、长亭、奇安信、OSCS、微步、Seebug、KEV 等源采集高危漏洞，按策略过滤后推送到钉钉、企业微信等；支持多群同类型推送、关闭启动通知、本地 Web 看板浏览情报库（含 RSS 订阅），钉钉推送可附看板链接，一键复制分析提示词并跳转 ChatGPT / Gemini / DeepSeek。
 
 ## 漏洞情报看板
 
@@ -44,6 +44,8 @@
 **功能增强**
 
 - 漏洞情报看板（`--web-addr` / `watchvuln board`，本地浏览库内情报，支持排序筛选，标题旁一键复制并跳转 ChatGPT / Gemini / DeepSeek 分析，无登录）
+- 看板 **RSS 订阅**（`/feed.xml`，最近 50 条已推送漏洞；页面标题旁有 RSS 入口）
+- 钉钉等推送消息末尾可附**本地看板链接**（`web_public_host` / `web_public_url`，端口自动跟随 `web_addr`）
 - 配置文件 / `--pusher-file` 支持**多个同类型推送**（如多个钉钉群）
 - `-nm` / `--quiet` 关闭启动时的「初始化完成」推送
 - CLI：`list-sources`、`init-config`、启动配置自检
@@ -131,6 +133,8 @@ Docker 方式推荐使用环境变量来配置服务参数
 | `GO_SKIP_TLS_CHECK`     | 跳过 tls 校验（`true`/`1` 生效），等同 `-k/--insecure`，详情见 [配置代理](#配置代理)                      | `false`                                           |
 | `NO_SLEEP`              | 禁用夜晚休眠，全天24小时无休！[其他](#其他)                                                         | `false`                                           |
 | `WEB_ADDR`              | 漏洞情报看板监听地址，如 `127.0.0.1:8765`（空则关闭）                                                |                                                   |
+| `WEB_PUBLIC_HOST`       | 看板/RSS/推送链接的对外主机（IP 或域名）；端口自动取自 `WEB_ADDR`                                        |                                                   |
+| `WEB_PUBLIC_URL`        | 看板对外完整 URL（可选，覆盖 `WEB_PUBLIC_HOST`）                                                    |                                                   |
 | `PUSHER_FILE`           | 独立 yaml/json 推送列表文件（多钉钉等），见 `pushers.example.yaml`                                  |                                                   |
 
 比如使用钉钉机器人
@@ -210,6 +214,7 @@ watchvuln board --web-addr 127.0.0.1:8765
 | 筛选 | 等级、数据来源 |
 | 排序 | 默认**按披露日期**（最近公开的 CVE 在前）；可切换为**按入库更新**（最近被程序同步或变更的记录在前） |
 | AI 分析 | 标题旁 **ChatGPT** / **Gemini** / **DS**：自动复制分析提示词（含标题、CVE、等级、披露日期、原文链接），复制成功后打开对应站点 |
+| RSS | `http://本机IP:端口/feed.xml`，最近 **50 条已推送**漏洞；标题旁有 **RSS** 按钮，阅读器可订阅 |
 | 详情 | 点击表格行查看描述、标签、修复建议、参考链接 |
 | 分页 | 每页 30 条 |
 
@@ -239,6 +244,22 @@ watchvuln board --web-addr 127.0.0.1:8765
 | 入库更新 | 本程序本地库中该条记录的最后更新时间（等级/标签变更、重新同步等都会更新） |
 
 第一页是否为「最新」，取决于当前排序方式：查最近披露的漏洞用**披露日期**；查最近有变动的记录用**入库更新**。
+
+**RSS 订阅**
+
+- 地址：`http://本机IP:8765/feed.xml`（与看板同端口）
+- 内容：最近 50 条、与钉钉推送范围一致的**已推送**漏洞
+- 启动日志会打印可访问的 Feed 地址（配置了 `web_public_host` 时）
+
+**看板 / RSS 对外地址（监听 `0.0.0.0` 时建议配置）**
+
+```yaml
+web_addr: "0.0.0.0:8766"
+web_public_host: "192.168.1.100"   # 端口自动跟随 web_addr
+# 或写完整 URL：web_public_url: "http://192.168.1.100:8766"
+```
+
+配置后，钉钉推送末尾会附加看板链接；启动日志示例：`vuln board rss feed: http://192.168.1.100:8766/feed.xml`
 
 </details>
 
@@ -405,8 +426,17 @@ docker run --restart always -d \
 前往 [GitHub Releases](https://github.com/shellsec/watchvuln3/releases) 下载对应平台的二进制，或在仓库根目录自行编译:
 
 ```bash
-go build -o watchvuln.exe .
+# 单平台（当前系统）
+go build -trimpath -ldflags "-s -w" -o watchvuln .
+
+# Windows 下一键交叉编译多平台（输出到 dist/，不提交 Git）
+.\scripts\build-release.ps1
+
+# Linux / macOS
+./scripts/build-release.sh v3.1.0
 ```
+
+`dist/` 目录示例：`watchvuln-windows-amd64.exe`、`watchvuln-linux-amd64`、`watchvuln-linux-arm64` 等。项目使用纯 Go SQLite，**无需 CGO**，可在 Windows 上直接编出 Linux 版。
 
 **推荐启动示例（钉钉 + 企业微信 + 关闭初始化推送 + 漏洞看板）**：
 
@@ -421,6 +451,7 @@ go build -o watchvuln.exe .
 | `-nm` | 不推送启动时的「初始化完成」消息（等同 `--no-start-message`） |
 | `--interval 30m` | 每 30 分钟检查一次 |
 | `--web-addr 0.0.0.0:8765` | 开启漏洞情报看板，浏览器访问 `http://本机IP:8765/` |
+| `--web-public-host 192.168.1.100` | 看板/RSS/推送链接的对外 IP（端口跟随 `--web-addr`） |
 
 > 请将 `YOUR_*` 替换为你自己的密钥，勿提交到公开仓库。
 
@@ -468,6 +499,8 @@ GLOBAL OPTIONS:
    --proxy value, -x value      set request proxy, support socks5://xxx or http(s)://
    --sources value, -s value    set vuln sources (default: "avd,chaitin,nox,oscs,threatbook,seebug,struts2,kev,venustech")
    --web-addr value             vuln intelligence board listen address, e.g. 127.0.0.1:8765
+   --web-public-url value       full public URL for board/RSS links in push messages
+   --web-public-host value      public host/IP for board/RSS links; port from --web-addr
 
    [Other Options]
 

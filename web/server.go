@@ -33,6 +33,7 @@ func NewServer(db *ent.Client, addr string) *Server {
 func (s *Server) Start(ctx context.Context) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", s.handleIndex)
+	mux.HandleFunc("/feed.xml", s.handleFeed)
 	mux.HandleFunc("/api/vulns", s.handleAPIVulns)
 	mux.HandleFunc("/api/stats", s.handleAPIStats)
 	mux.HandleFunc("/api/sources", s.handleAPISources)
@@ -43,6 +44,7 @@ func (s *Server) Start(ctx context.Context) error {
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	s.log.Infof("vuln intelligence board listening on http://%s/", s.addr)
+	s.log.Infof("rss feed: http://%s/feed.xml", s.addr)
 	errCh := make(chan error, 1)
 	go func() {
 		errCh <- s.server.ListenAndServe()

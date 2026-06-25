@@ -6,6 +6,7 @@ const dashboardHTML = `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>漏洞情报看板 · WatchVuln</title>
+  <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="WatchVuln 漏洞情报" />
   <style>
     :root { --bg:#0f1419; --card:#1a2332; --border:#2d3a4f; --text:#e7ecf3; --muted:#8b9cb3;
       --crit:#ff4d4f; --high:#ff7a45; --med:#faad14; --low:#52c41a; --accent:#3b82f6; }
@@ -16,6 +17,9 @@ const dashboardHTML = `<!DOCTYPE html>
     h1 { margin:0; font-size:1.35rem; font-weight:600; }
     .repo-link { color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; }
     .repo-link:hover { color:var(--accent); border-color:var(--accent); }
+    .rss-link { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; }
+    .rss-link:hover { color:#f26522; border-color:#f26522; }
+    .rss-link svg { width:14px; height:14px; fill:currentColor; }
     .stats { display:flex; gap:12px; flex-wrap:wrap; }
     .stat { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px 14px; min-width:88px; }
     .stat b { display:block; font-size:1.25rem; }
@@ -59,6 +63,10 @@ const dashboardHTML = `<!DOCTYPE html>
   <header>
     <div class="brand">
       <h1>漏洞情报看板</h1>
+      <a class="rss-link" href="/feed.xml" title="RSS 订阅（最近50条已推送漏洞）">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z"/></svg>
+        RSS
+      </a>
       <a class="repo-link" href="https://github.com/shellsec/watchvuln3" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
     <div class="stats" id="stats"></div>

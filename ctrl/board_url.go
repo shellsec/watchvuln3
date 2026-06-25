@@ -36,6 +36,35 @@ func (c *WatchVulnAppConfig) BoardPublicURL() string {
 	return buildBoardURL("http", host, port, "")
 }
 
+// BoardFeedPublicURL returns the public RSS feed URL for startup logs and docs.
+func (c *WatchVulnAppConfig) BoardFeedPublicURL() string {
+	base := c.BoardPublicURL()
+	if base != "" {
+		u, err := url.Parse(base)
+		if err != nil {
+			return ""
+		}
+		u.Path = "/feed.xml"
+		u.RawQuery = ""
+		u.Fragment = ""
+		return u.String()
+	}
+
+	addr := strings.TrimSpace(c.WebAddr)
+	if addr == "" {
+		return ""
+	}
+	host, port, err := net.SplitHostPort(addr)
+	if err != nil {
+		return ""
+	}
+	switch host {
+	case "0.0.0.0", "::":
+		return ""
+	}
+	return buildBoardURL("http", host, port, "/feed.xml")
+}
+
 func buildBoardURL(scheme, host, port, path string) string {
 	if path == "" {
 		path = "/"
