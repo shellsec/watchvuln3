@@ -38,13 +38,33 @@ func (c *WatchVulnAppConfig) BoardPublicURL() string {
 
 // BoardFeedPublicURL returns the public RSS feed URL for startup logs and docs.
 func (c *WatchVulnAppConfig) BoardFeedPublicURL() string {
+	return c.BoardPathPublicURL("/feed.xml")
+}
+
+// BoardMCPPublicURL returns the Streamable HTTP MCP endpoint for startup logs.
+func (c *WatchVulnAppConfig) BoardMCPPublicURL() string {
+	return c.BoardPathPublicURL("/mcp")
+}
+
+// BoardAPIPublicURL returns the REST API catalog URL for startup logs.
+func (c *WatchVulnAppConfig) BoardAPIPublicURL() string {
+	return c.BoardPathPublicURL("/api")
+}
+
+// BoardPathPublicURL joins path onto the public board base URL.
+func (c *WatchVulnAppConfig) BoardPathPublicURL(path string) string {
+	if path == "" {
+		path = "/"
+	} else if !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
 	base := c.BoardPublicURL()
 	if base != "" {
 		u, err := url.Parse(base)
 		if err != nil {
 			return ""
 		}
-		u.Path = "/feed.xml"
+		u.Path = path
 		u.RawQuery = ""
 		u.Fragment = ""
 		return u.String()
@@ -62,7 +82,7 @@ func (c *WatchVulnAppConfig) BoardFeedPublicURL() string {
 	case "0.0.0.0", "::":
 		return ""
 	}
-	return buildBoardURL("http", host, port, "/feed.xml")
+	return buildBoardURL("http", host, port, path)
 }
 
 func buildBoardURL(scheme, host, port, path string) string {

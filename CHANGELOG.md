@@ -1,3 +1,11 @@
+## Unreleased
+
+### 新增
+
+- **REST API**：`GET /api` 目录（`base_url` 跟随当前访问 Host），`/api/vulns` 列表，`/api/vuln` 按 id/cve/key 取详情，以及原有 `/api/stats`、`/api/sources`
+- **MCP（Streamable HTTP）**：`POST /mcp`，工具 `search_vulns` / `get_vuln` / `list_sources` / `get_stats`；看板标题旁 **API / MCP** 一键接入（复制当前地址、Cursor 配置、Claude Code 命令）
+- MCP / API 地址**跟随请求 Host**：换 IP 或改用主机名打开看板后，页面展示与 `GET /api` 返回的地址会自动指向当前访问入口
+
 ## v3.1.0 (2026-06-25)
 
 ### 新增

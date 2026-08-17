@@ -68,6 +68,10 @@ web_public_host: "192.168.1.100"
 
 RSS：`http://127.0.0.1:8765/feed.xml`（最近 50 条已推送漏洞）
 
+REST API：`http://当前访问地址/api`（目录会返回当前 `base_url`）
+
+MCP：`http://当前访问地址/mcp`（Streamable HTTP，地址跟随访问 Host；看板标题旁 **API / MCP** 可一键复制）
+
 仅查看看板时可执行：`./watchvuln board --web-addr 127.0.0.1:8765`
 
 ## 辅助命令

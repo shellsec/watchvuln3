@@ -3,15 +3,30 @@
 [![GitHub Release](https://img.shields.io/github/v/release/shellsec/watchvuln3?label=release)](https://github.com/shellsec/watchvuln3/releases)
 [![License](https://img.shields.io/github/license/shellsec/watchvuln3)](https://github.com/shellsec/watchvuln3)
 
+**语言**: [中文](./README.md) | [English](./README_EN.md)
+
 **仓库**: [github.com/shellsec/watchvuln3](https://github.com/shellsec/watchvuln3) · **当前版本**: v3.1.0
 
-> **EN** — WatchVuln collects high-severity vulnerabilities from AVD, Chaitin, Qianxin TI, OSCS, ThreatBook, Seebug, KEV, and other sources, filters them by policy, and pushes alerts to DingTalk, WeCom, and more. Supports multiple channels of the same pusher type, optional startup notifications, and a local web board to browse your intel database—with one-click copy of analysis prompts and jump to ChatGPT, Gemini, or DeepSeek.
+> WatchVuln 从 AVD、长亭、奇安信、OSCS、微步、Seebug、KEV 等源采集高危漏洞，按策略过滤后推送到钉钉、企业微信等；支持多群同类型推送、关闭启动通知、本地 Web 看板浏览情报库（含 RSS 订阅、REST API、MCP 一键接入），钉钉推送可附看板链接，一键复制分析提示词并跳转 ChatGPT / Gemini / DeepSeek。
 
-> **ZH** — WatchVuln 从 AVD、长亭、奇安信、OSCS、微步、Seebug、KEV 等源采集高危漏洞，按策略过滤后推送到钉钉、企业微信等；支持多群同类型推送、关闭启动通知、本地 Web 看板浏览情报库（含 RSS 订阅），钉钉推送可附看板链接，一键复制分析提示词并跳转 ChatGPT / Gemini / DeepSeek。
+## 🚀 推荐使用 [ofox.ai](https://ofox.io/x/aiv123)
+
+> **一句话**：一个账号直达 GPT-5.5 / Claude 4.8 Opus / Gemini 3.5 Flash 等 **100+** 顶尖模型，首充额外赠 **$3** 额度。
+
+[👉 注册领取](https://ofox.io/x/aiv123) · 全球专线 · 企业级 SLA · 不留存对话
+
+| ⚡️ 极速稳定 | 🧠 模型全 | 🛡️ 隐私安全 |
+|:---:|:---:|:---:|
+| 全球专线，企业级 SLA | 100+ 模型一号直达 | 不留存任何对话 |
+
+## ☕ 请我喝可乐
+
+开源不易，欢迎赞助支持：  
+👉 [爱发电](https://ifdian.net/a/shellsec)
 
 ## 漏洞情报看板
 
-本地浏览库内情报，支持搜索、筛选、排序；标题旁一键复制分析提示词并跳转 **ChatGPT / Gemini / DeepSeek**。启动方式：`--web-addr 127.0.0.1:8765` 或 `watchvuln board`，更多说明见下文 **漏洞情报看板（Web，无登录）** 折叠段。
+本地浏览库内情报，支持搜索、筛选、排序；标题旁一键复制分析提示词并跳转 **ChatGPT / Gemini / DeepSeek**。看板同时提供 **REST API** 与 **MCP**（地址跟随当前访问 IP）。启动方式：`--web-addr 127.0.0.1:8765` 或 `watchvuln board`，更多说明见下文 **漏洞情报看板（Web，无登录）** 折叠段。
 
 ![漏洞情报看板：列表、筛选排序与 AI 分析按钮](https://github.com/user-attachments/assets/6c10562e-4238-42cc-befd-052a72b0f7f7)
 
@@ -20,12 +35,6 @@
 ![漏洞情报看板：漏洞详情弹窗](https://github.com/user-attachments/assets/f52964bd-b69d-4925-91f2-a8a2947b0e9c)
 
 *点击表格行查看描述、标签、修复建议与参考链接*
-
-## ☕ 请我喝可乐
-
-开源不易，欢迎赞助支持：
-
-👉 [爱发电](https://www.ifdian.net/a/shellsec)
 
 ## 关于本仓库
 
@@ -45,6 +54,7 @@
 
 - 漏洞情报看板（`--web-addr` / `watchvuln board`，本地浏览库内情报，支持排序筛选，标题旁一键复制并跳转 ChatGPT / Gemini / DeepSeek 分析，无登录）
 - 看板 **RSS 订阅**（`/feed.xml`，最近 50 条已推送漏洞；页面标题旁有 RSS 入口）
+- 看板 **REST API / MCP**：`/api`、`/mcp`，页面 **API / MCP** 一键接入；地址跟随当前访问 Host，换 IP 后自动指向新入口
 - 钉钉等推送消息末尾可附**本地看板链接**（`web_public_host` / `web_public_url`，端口自动跟随 `web_addr`）
 - 配置文件 / `--pusher-file` 支持**多个同类型推送**（如多个钉钉群）
 - `-nm` / `--quiet` 关闭启动时的「初始化完成」推送
@@ -82,6 +92,21 @@
 - 新建的漏洞不符合推送策略，但漏洞信息被更新后符合了推送策略，也会被推送
 
 ![app](./.github/assets/app.jpg)
+
+## 收到推送后怎么做（建议流程）
+
+WatchVuln 负责**监测与告警**；收到推送后，建议按下面闭环处置（可按组织实际制度裁剪）：
+
+1. **接收**：钉钉 / 企微等收到告警，或打开本地[漏洞情报看板](#漏洞情报看板)查看详情
+2. **研判**：确认产品/版本是否在资产范围内；结合标签（如 POC 公开、KEV）与 AI 分析提示词，判断利用条件与影响面
+3. **定级与分流**：
+   - 本环境不受影响 → 记录结论，关闭或归档
+   - 需修复但非紧急 → 纳入常规漏洞工单（补丁窗口 / 变更流程）
+   - **严重、KEV、已在野利用、且本环境受影响** → 升级组织应急响应（本工具不替代应急规范）
+4. **处置**：打补丁、升级、临时缓解（WAF / 隔离 / 配置加固等）
+5. **复测与关闭**：验证漏洞不可利用后关闭工单；必要时更新资产与基线
+
+> 完整的应急指挥、通报、恢复等要求，请遵循所在组织的应急管理规范；此处只约定与 WatchVuln 告警的衔接点。
 
 ## 快速使用
 
@@ -215,6 +240,8 @@ watchvuln board --web-addr 127.0.0.1:8765
 | 排序 | 默认**按披露日期**（最近公开的 CVE 在前）；可切换为**按入库更新**（最近被程序同步或变更的记录在前） |
 | AI 分析 | 标题旁 **ChatGPT** / **Gemini** / **DS**：自动复制分析提示词（含标题、CVE、等级、披露日期、原文链接），复制成功后打开对应站点 |
 | RSS | `http://本机IP:端口/feed.xml`，最近 **50 条已推送**漏洞；标题旁有 **RSS** 按钮，阅读器可订阅 |
+| REST API | `http://当前访问地址/api`，无登录；标题旁 **API / MCP** 可复制调用示例 |
+| MCP | `http://当前访问地址/mcp`（Streamable HTTP），一键复制 Cursor / Claude Code 配置 |
 | 详情 | 点击表格行查看描述、标签、修复建议、参考链接 |
 | 分页 | 每页 30 条 |
 
@@ -260,6 +287,36 @@ web_public_host: "192.168.1.100"   # 端口自动跟随 web_addr
 ```
 
 配置后，钉钉推送末尾会附加看板链接；启动日志示例：`vuln board rss feed: http://192.168.1.100:8766/feed.xml`
+
+**REST API 与 MCP（一键接入）**
+
+看板与监测共用同一个 HTTP 端口。**API / MCP 的 URL 跟随你打开看板时用的地址**（`window.location.origin` / 请求 `Host`）：用 `http://192.168.1.100:8765/` 打开，接入地址就是这台 IP；DHCP 换到 `192.168.1.200` 后，用新 IP 打开看板，页面上的复制按钮会自动变成新地址。服务监听 `0.0.0.0` 时，本机任意可达 IP 都能打到同一套 `/api` 和 `/mcp`。已写入 Cursor 的旧配置不会自己改，换 IP 后重新打开看板再复制一次即可。
+
+页面标题旁点 **API / MCP** 可复制当前地址、Cursor 配置、Claude Code 命令和 curl 示例。也可直接打开 `GET /api` 查看目录（其中的 `base_url` 同样是当前 Host）。
+
+| 接口 | 说明 |
+|------|------|
+| `GET /api` | 目录、MCP 地址、调用示例 |
+| `GET /api/stats` | 总数与等级分布 |
+| `GET /api/sources` | 数据源列表 |
+| `GET /api/vulns` | 分页检索：`q` `severity` `source` `sort` `page` `limit` |
+| `GET /api/vuln` | 单条详情：`id` 或 `cve` 或 `key` |
+| `POST /mcp` | MCP Streamable HTTP（工具：`search_vulns` `get_vuln` `list_sources` `get_stats`） |
+
+```bash
+# 把 HOST 换成你浏览器地址栏里的 IP 或主机名
+HOST=http://192.168.1.100:8765
+
+curl -s "$HOST/api/vulns?q=CVE-2024&severity=严重&limit=5"
+curl -s "$HOST/api/vuln?cve=CVE-2024-0001"
+curl -s "$HOST/api/stats"
+
+# Cursor：Settings → MCP，或把下面写入 mcp.json
+# { "mcpServers": { "watchvuln": { "type": "http", "url": "http://192.168.1.100:8765/mcp" } } }
+
+# Claude Code
+claude mcp add --transport http watchvuln http://192.168.1.100:8765/mcp
+```
 
 </details>
 

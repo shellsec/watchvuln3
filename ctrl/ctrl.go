@@ -104,7 +104,7 @@ func (w *WatchVulnApp) Run(ctx context.Context) error {
 	if w.config.WebAddr != "" {
 		boardCtx, boardCancel := context.WithCancel(ctx)
 		defer boardCancel()
-		srv := web.NewServer(w.db, w.config.WebAddr)
+		srv := web.NewServer(w.db, w.config.WebAddr).SetVersion(w.config.Version)
 		go func() {
 			if err := srv.Start(boardCtx); err != nil && !errors.Is(err, context.Canceled) {
 				w.log.Errorf("vuln board stopped: %s", err)

@@ -60,8 +60,10 @@ func boardAction(c *cli.Context) error {
 	ctx, cancel := signalCtx()
 	defer cancel()
 	fmt.Printf("漏洞情报看板: http://%s/ (Ctrl+C 退出)\n", addr)
+	fmt.Printf("REST API: http://%s/api\n", addr)
+	fmt.Printf("MCP: http://%s/mcp  （地址跟随访问 Host，换 IP 后用新地址打开即可）\n", addr)
 	fmt.Printf("RSS 订阅: http://%s/feed.xml\n", addr)
-	return web.NewServer(client, addr).Start(ctx)
+	return web.NewServer(client, addr).SetVersion(Version).Start(ctx)
 }
 
 func loadPusherConfig(c *cli.Context) ([]map[string]string, error) {

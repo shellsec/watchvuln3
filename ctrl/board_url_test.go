@@ -105,3 +105,12 @@ func TestBoardFeedPublicURL(t *testing.T) {
 		})
 	}
 }
+
+func TestBoardMCPAndAPIPublicURL(t *testing.T) {
+	cfg := WatchVulnAppConfig{
+		WebAddr:       "0.0.0.0:8766",
+		WebPublicHost: "192.168.1.100",
+	}
+	require.Equal(t, "http://192.168.1.100:8766/mcp", cfg.BoardMCPPublicURL())
+	require.Equal(t, "http://192.168.1.100:8766/api", cfg.BoardAPIPublicURL())
+}

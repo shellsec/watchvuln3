@@ -32,6 +32,16 @@ func LogStartupSummary(config *WatchVulnAppConfig) {
 		} else {
 			log.Infof("vuln board rss feed: http://%s/feed.xml", config.WebAddr)
 		}
+		if api := config.BoardAPIPublicURL(); api != "" {
+			log.Infof("vuln board api: %s", api)
+		} else {
+			log.Infof("vuln board api: http://%s/api", config.WebAddr)
+		}
+		if mcp := config.BoardMCPPublicURL(); mcp != "" {
+			log.Infof("vuln board mcp: %s (follows request host)", mcp)
+		} else {
+			log.Infof("vuln board mcp: http://%s/mcp (streamable-http, follows request host)", config.WebAddr)
+		}
 	} else {
 		log.Infof("vuln board: disabled (use --web-addr 127.0.0.1:8765 or `watchvuln board`)")
 	}

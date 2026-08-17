@@ -17,9 +17,20 @@ const dashboardHTML = `<!DOCTYPE html>
     h1 { margin:0; font-size:1.35rem; font-weight:600; }
     .repo-link { color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; }
     .repo-link:hover { color:var(--accent); border-color:var(--accent); }
-    .rss-link { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; }
+    .rss-link, button.docs-link { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:.85rem; text-decoration:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; background:transparent; }
     .rss-link:hover { color:#f26522; border-color:#f26522; }
+    button.docs-link:hover { color:var(--accent); border-color:var(--accent); filter:none; background:transparent; }
     .rss-link svg { width:14px; height:14px; fill:currentColor; }
+    .docs-modal { max-width:860px; }
+    .docs-origin { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; background:#0f1419; border:1px solid var(--border); border-radius:8px; padding:10px 12px; word-break:break-all; font-size:.85rem; }
+    .docs-sec h3 { margin:18px 0 8px; font-size:1rem; }
+    .docs-sec p { color:var(--muted); font-size:.85rem; margin:0 0 10px; line-height:1.55; }
+    pre.docs-code { background:#0f1419; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:.78rem; overflow:auto; white-space:pre-wrap; word-break:break-word; color:#c5d0de; margin:0 0 10px; font-family:ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .docs-actions { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px; }
+    .docs-table { width:100%; font-size:.82rem; margin:0 0 10px; }
+    .docs-table th { width:30%; }
+    .docs-sec code { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; font-size:.84em; color:#c5d0de; }
+    .docs-sec a { color:var(--accent); }
     .stats { display:flex; gap:12px; flex-wrap:wrap; }
     .stat { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px 14px; min-width:88px; }
     .stat b { display:block; font-size:1.25rem; }
@@ -67,6 +78,7 @@ const dashboardHTML = `<!DOCTYPE html>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z"/></svg>
         RSS
       </a>
+      <button type="button" class="docs-link" id="apiMcpBtn" title="REST API 与 MCP 一键接入">API / MCP</button>
       <a class="repo-link" href="https://github.com/shellsec/watchvuln3" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
     <div class="stats" id="stats"></div>
@@ -94,6 +106,53 @@ const dashboardHTML = `<!DOCTYPE html>
     </div>
   </main>
   <div class="modal" id="modal"><div class="modal-box" id="modalBody"></div></div>
+  <div class="modal" id="docsModal">
+    <div class="modal-box docs-modal">
+      <h2>API 与 MCP 一键接入</h2>
+      <p class="hint">地址跟随<strong>当前浏览器访问的 Host</strong>。换了本机 IP / 用主机名打开看板后，这里会自动变成新地址；监听 <code>0.0.0.0</code> 时，任意可达 IP 都能连同一套 <code>/api</code> 和 <code>/mcp</code>。</p>
+      <div class="docs-origin" id="docsOrigin"></div>
+      <div class="docs-actions">
+        <button type="button" id="copyOriginBtn">复制当前地址</button>
+        <button type="button" id="copyMcpBtn">复制 MCP 地址</button>
+        <button type="button" id="copyApiBtn">复制 API 地址</button>
+      </div>
+      <div class="docs-sec">
+        <h3>MCP 一键接入</h3>
+        <p>Streamable HTTP 端点：<code id="docsMcpUrl"></code>。Cursor / Claude Code / 其他 MCP 客户端填这个 URL 即可，无需额外进程。</p>
+        <div class="docs-actions">
+          <button type="button" id="cursorInstallBtn">一键接入 Cursor</button>
+          <button type="button" id="copyCursorCfgBtn" class="btn-muted">复制 Cursor 配置</button>
+          <button type="button" id="copyClaudeCmdBtn" class="btn-muted">复制 Claude Code 命令</button>
+        </div>
+        <pre class="docs-code" id="docsCursorCfg"></pre>
+        <p>已写入客户端的旧配置不会自己改；IP 变了后重新打开看板，再点一次复制即可。也可用不随 DHCP 变化的主机名访问。</p>
+        <p>MCP 工具：<code>search_vulns</code> 检索摘要，<code>get_vuln</code> 取详情，<code>list_sources</code> 数据源，<code>get_stats</code> 统计。</p>
+        <pre class="docs-code" id="docsMcpExample"></pre>
+      </div>
+      <div class="docs-sec">
+        <h3>REST API</h3>
+        <p>无登录。完整目录见 <a id="docsApiIndex" href="/api" target="_blank" rel="noopener">GET /api</a>（返回的 <code>base_url</code> 也是当前访问地址）。</p>
+        <table class="docs-table">
+          <thead><tr><th>接口</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET /api</code></td><td>接口目录、MCP 地址、调用示例</td></tr>
+            <tr><td><code>GET /api/stats</code></td><td>总数与等级分布</td></tr>
+            <tr><td><code>GET /api/sources</code></td><td>数据源列表</td></tr>
+            <tr><td><code>GET /api/vulns</code></td><td>分页检索：q / severity / source / sort / page / limit</td></tr>
+            <tr><td><code>GET /api/vuln</code></td><td>单条详情：id 或 cve 或 key</td></tr>
+          </tbody>
+        </table>
+        <div class="docs-actions">
+          <button type="button" id="copyCurlListBtn" class="btn-muted">复制列表示例</button>
+          <button type="button" id="copyCurlGetBtn" class="btn-muted">复制详情示例</button>
+        </div>
+        <pre class="docs-code" id="docsApiExample"></pre>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="docsCloseBtn" class="btn-muted">关闭</button>
+      </div>
+    </div>
+  </div>
   <div class="modal" id="copyFailModal">
     <div class="modal-box">
       <h2>复制失败，请手动复制</h2>
@@ -253,6 +312,55 @@ const dashboardHTML = `<!DOCTYPE html>
     document.getElementById('q').onkeydown = e => { if (e.key==='Enter') { page=1; loadVulns(); }};
     document.getElementById('prevBtn').onclick = () => { if (page>1) { page--; loadVulns(); }};
     document.getElementById('nextBtn').onclick = () => { if (page*limit<total) { page++; loadVulns(); }};
+
+    function currentOrigin() { return (window.location.origin || '').replace(/\/$/, ''); }
+    function fillDocs() {
+      const origin = currentOrigin();
+      const mcpUrl = origin + '/mcp';
+      const apiUrl = origin + '/api';
+      const cursorCfg = JSON.stringify({ mcpServers: { watchvuln: { type: 'http', url: mcpUrl } } }, null, 2);
+      const claudeCmd = 'claude mcp add --transport http watchvuln ' + mcpUrl;
+      const mcpInit = '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"curl","version":"1.0"}}}';
+      const mcpExample = 'curl -s -X POST "' + mcpUrl + '" \\\n  -H "Content-Type: application/json" \\\n  -H "Accept: application/json, text/event-stream" \\\n  -d \'' + mcpInit + '\'';
+      const apiExample = '# 列表（关键词 + 等级）\ncurl -s "' + origin + '/api/vulns?q=CVE-2024&severity=严重&limit=5"\n\n# 按 CVE 取详情\ncurl -s "' + origin + '/api/vuln?cve=CVE-2024-0001"\n\n# 统计 / 数据源 / 目录\ncurl -s "' + origin + '/api/stats"\ncurl -s "' + origin + '/api/sources"\ncurl -s "' + apiUrl + '"';
+      document.getElementById('docsOrigin').textContent = origin + '  （看板 ' + origin + '/  · API ' + apiUrl + '  · MCP ' + mcpUrl + '）';
+      document.getElementById('docsMcpUrl').textContent = mcpUrl;
+      document.getElementById('docsCursorCfg').textContent = cursorCfg;
+      document.getElementById('docsMcpExample').textContent = '# MCP initialize\n' + mcpExample + '\n\n# Claude Code\n' + claudeCmd;
+      document.getElementById('docsApiExample').textContent = apiExample;
+      document.getElementById('docsApiIndex').href = apiUrl;
+      fillDocs._mcpUrl = mcpUrl;
+      fillDocs._apiUrl = apiUrl;
+      fillDocs._origin = origin;
+      fillDocs._cursorCfg = cursorCfg;
+      fillDocs._claudeCmd = claudeCmd;
+      fillDocs._apiList = 'curl -s "' + origin + '/api/vulns?q=CVE-2024&severity=严重&limit=5"';
+      fillDocs._apiGet = 'curl -s "' + origin + '/api/vuln?cve=CVE-2024-0001"';
+    }
+    function copyDocs(text, btn) {
+      if (!text) return;
+      if (copyPromptSync(text)) { flashCopied(btn); return; }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => flashCopied(btn)).catch(() => showCopyFailDialog(text, '', '复制'));
+        return;
+      }
+      showCopyFailDialog(text, '', '复制');
+    }
+    document.getElementById('apiMcpBtn').onclick = () => { fillDocs(); document.getElementById('docsModal').classList.add('open'); };
+    document.getElementById('docsModal').onclick = e => { if (e.target.id==='docsModal') e.target.classList.remove('open'); };
+    document.getElementById('docsCloseBtn').onclick = () => document.getElementById('docsModal').classList.remove('open');
+    document.getElementById('copyOriginBtn').onclick = function() { copyDocs(fillDocs._origin, this); };
+    document.getElementById('copyMcpBtn').onclick = function() { copyDocs(fillDocs._mcpUrl, this); };
+    document.getElementById('copyApiBtn').onclick = function() { copyDocs(fillDocs._apiUrl, this); };
+    document.getElementById('copyCursorCfgBtn').onclick = function() { copyDocs(fillDocs._cursorCfg, this); };
+    document.getElementById('copyClaudeCmdBtn').onclick = function() { copyDocs(fillDocs._claudeCmd, this); };
+    document.getElementById('copyCurlListBtn').onclick = function() { copyDocs(fillDocs._apiList, this); };
+    document.getElementById('copyCurlGetBtn').onclick = function() { copyDocs(fillDocs._apiGet, this); };
+    document.getElementById('cursorInstallBtn').onclick = function() {
+      const cfg = btoa(unescape(encodeURIComponent(JSON.stringify({ type: 'http', url: fillDocs._mcpUrl }))));
+      window.location.href = 'cursor://anysphere.cursor-deeplink/mcp/install?name=watchvuln&config=' + encodeURIComponent(cfg);
+    };
+
     updateSortHint(); loadStats(); loadSources(); loadVulns();
   </script>
 </body>

@@ -18,6 +18,7 @@ diff_mode: false
 skip_tls_verify: false
 proxy: ""
 web_addr: "0.0.0.0:8765"
+# REST API: /api    MCP: /mcp（地址跟随访问 Host）
 # 推送末尾看板链接：端口自动跟随 web_addr
 web_public_host: "192.168.1.100"
 white_keywords: [ ]
